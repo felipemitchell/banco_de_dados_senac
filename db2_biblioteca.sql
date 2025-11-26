@@ -1,4 +1,5 @@
 CREATE DATABASE LivrariaLeituraCompanhia;
+
 USE LivrariaLeituraCompanhia;
 
 CREATE TABLE Autores (
@@ -82,3 +83,4 @@ INSERT INTO ItensPedido (pedido_id, livro_id, quantidade, preco) VALUES
 (1, 3, 1, 49.90),
 (2, 2, 1, 42.50),
 (3, 5, 3, 29.90);
+
