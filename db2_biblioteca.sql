@@ -1,139 +1,84 @@
-CREATE DATABASE  IF NOT EXISTS `biblioteca_municipal2` /*!40100 DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci */ /*!80016 DEFAULT ENCRYPTION='N' */;
-USE `biblioteca_municipal2`;
--- MySQL dump 10.13  Distrib 8.0.28, for Win64 (x86_64)
---
--- Host: localhost    Database: biblioteca_municipal2
--- ------------------------------------------------------
--- Server version	8.0.28
+CREATE DATABASE LivrariaLeituraCompanhia;
+USE LivrariaLeituraCompanhia;
 
-/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
-/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
-/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
-/*!50503 SET NAMES utf8 */;
-/*!40103 SET @OLD_TIME_ZONE=@@TIME_ZONE */;
-/*!40103 SET TIME_ZONE='+00:00' */;
-/*!40014 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0 */;
-/*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
-/*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
-/*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
+CREATE TABLE Autores (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    nome VARCHAR(100) NOT NULL
+);
 
---
--- Table structure for table `autores`
---
+CREATE TABLE Categorias (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    nome VARCHAR(50) NOT NULL
+);
 
-DROP TABLE IF EXISTS `autores`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `autores` (
-  `id_autor` int NOT NULL AUTO_INCREMENT,
-  `nome` varchar(100) DEFAULT NULL,
-  `nacionalidade` varchar(100) DEFAULT NULL,
-  PRIMARY KEY (`id_autor`)
-) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
+CREATE TABLE Livros (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    titulo VARCHAR(200) NOT NULL,
+    autor_id INT,
+    categoria_id INT,
+    preco DECIMAL(10,2),
+    estoque INT,
+    FOREIGN KEY (autor_id) REFERENCES Autores(id),
+    FOREIGN KEY (categoria_id) REFERENCES Categorias(id)
+);
 
---
--- Dumping data for table `autores`
---
+CREATE TABLE Clientes (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    nome VARCHAR(100) NOT NULL,
+    email VARCHAR(100)
+);
 
-LOCK TABLES `autores` WRITE;
-/*!40000 ALTER TABLE `autores` DISABLE KEYS */;
-INSERT INTO `autores` VALUES (1,'Juan Rulfo','Mexico'),(2,'Mario Benedetti','Uruguai'),(3,'Mario Vargas Llosa','Peru'),(4,'Florbela Espanca','Portugal'),(5,'Ivan Gontcharov','Rússia');
-/*!40000 ALTER TABLE `autores` ENABLE KEYS */;
-UNLOCK TABLES;
+CREATE TABLE Pedidos (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    cliente_id INT,
+    data_pedido DATE,
+    total DECIMAL(10,2),
+    FOREIGN KEY (cliente_id) REFERENCES Clientes(id)
+);
 
---
--- Table structure for table `emprestimos`
---
+CREATE TABLE ItensPedido (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    pedido_id INT,
+    livro_id INT,
+    quantidade INT,
+    preco DECIMAL(10,2),
+    FOREIGN KEY (pedido_id) REFERENCES Pedidos(id),
+    FOREIGN KEY (livro_id) REFERENCES Livros(id)
+);
 
-DROP TABLE IF EXISTS `emprestimos`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `emprestimos` (
-  `id_emprestimo` int NOT NULL AUTO_INCREMENT,
-  `id_livro` int DEFAULT NULL,
-  `id_membro` int DEFAULT NULL,
-  `data_emprestimo` date DEFAULT NULL,
-  `data_devolucao` date DEFAULT NULL,
-  PRIMARY KEY (`id_emprestimo`),
-  KEY `id_livro` (`id_livro`),
-  KEY `id_membro` (`id_membro`),
-  CONSTRAINT `emprestimos_ibfk_1` FOREIGN KEY (`id_livro`) REFERENCES `livros` (`id_livro`),
-  CONSTRAINT `emprestimos_ibfk_2` FOREIGN KEY (`id_membro`) REFERENCES `membros` (`id_membro`)
-) ENGINE=InnoDB AUTO_INCREMENT=14 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
+INSERT INTO Autores (nome) VALUES 
+('Clarice Lispector'),
+('George Orwell'),
+('J.K. Rowling'),
+('Stephen King'),
+('Monteiro Lobato');
 
---
--- Dumping data for table `emprestimos`
---
+INSERT INTO Categorias (nome) VALUES 
+('Ficção'),
+('Romance'),
+('Fantasia'),
+('Suspense'),
+('Infantil');
 
-LOCK TABLES `emprestimos` WRITE;
-/*!40000 ALTER TABLE `emprestimos` DISABLE KEYS */;
-INSERT INTO `emprestimos` VALUES (6,4,4,'2024-03-01',NULL),(7,1,4,'2024-04-02','2024-04-20'),(8,2,1,'2024-05-03',NULL),(9,3,2,'2024-06-04',NULL),(10,4,4,'2024-03-01',NULL),(11,1,4,'2024-04-02','2024-04-20'),(12,2,1,'2024-05-03',NULL),(13,3,2,'2024-06-04',NULL);
-/*!40000 ALTER TABLE `emprestimos` ENABLE KEYS */;
-UNLOCK TABLES;
+INSERT INTO Livros (titulo, autor_id, categoria_id, preco, estoque) VALUES 
+('A Hora da Estrela', 1, 2, 35.90, 50),
+('1984', 2, 1, 42.50, 30),
+('Harry Potter', 3, 3, 49.90, 100),
+('O Iluminado', 4, 4, 55.00, 25),
+('Reinações de Narizinho', 5, 5, 29.90, 80);
 
---
--- Table structure for table `livros`
---
+INSERT INTO Clientes (nome, email) VALUES 
+('Maria Silva', 'maria@email.com'),
+('João Santos', 'joao@email.com'),
+('Ana Oliveira', 'ana@email.com');
 
-DROP TABLE IF EXISTS `livros`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `livros` (
-  `id_livro` int NOT NULL AUTO_INCREMENT,
-  `id_autor` int DEFAULT NULL,
-  `titulo` varchar(100) DEFAULT NULL,
-  `ano_publicacao` year DEFAULT NULL,
-  PRIMARY KEY (`id_livro`),
-  KEY `id_autor` (`id_autor`),
-  CONSTRAINT `livros_ibfk_1` FOREIGN KEY (`id_autor`) REFERENCES `autores` (`id_autor`)
-) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
+INSERT INTO Pedidos (cliente_id, data_pedido, total) VALUES 
+(1, '2024-01-15', 85.80),
+(2, '2024-01-16', 42.50),
+(1, '2024-01-17', 89.70);
 
---
--- Dumping data for table `livros`
---
-
-LOCK TABLES `livros` WRITE;
-/*!40000 ALTER TABLE `livros` DISABLE KEYS */;
-INSERT INTO `livros` VALUES (1,1,'Pedro Páramo',1955),(2,1,'El llano en llamas',1953),(3,2,'A tregua',1960),(4,3,'Travessuras da menina má',2006),(5,4,'Livro de Mágoas',1927),(6,5,'Oblómov',1927),(7,4,'Livro de Soror saudade',1927),(8,4,'Charneca em flor',1931),(9,3,'La ciudad y los perros',1963),(10,3,'A casa verde',1966);
-/*!40000 ALTER TABLE `livros` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Table structure for table `membros`
---
-
-DROP TABLE IF EXISTS `membros`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `membros` (
-  `id_membro` int NOT NULL AUTO_INCREMENT,
-  `nome` varchar(100) DEFAULT NULL,
-  `endereco` varchar(100) DEFAULT NULL,
-  `telefone` varchar(9) DEFAULT NULL,
-  PRIMARY KEY (`id_membro`)
-) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Dumping data for table `membros`
---
-
-LOCK TABLES `membros` WRITE;
-/*!40000 ALTER TABLE `membros` DISABLE KEYS */;
-INSERT INTO `membros` VALUES (1,'Oblomov','Rua A, 123','123456789'),(2,'Maria','Rua B, 456','987654321'),(3,'Raskolnikov','Rua C, 789','111222333'),(4,'Caio Fernando Abreu','Rua D, 000','222111333'),(5,'Priscila Joana','Rua E, 111','444555666');
-/*!40000 ALTER TABLE `membros` ENABLE KEYS */;
-UNLOCK TABLES;
-/*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
-
-/*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
-/*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
-/*!40014 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS */;
-/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
-/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
-/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
-/*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
-
--- Dump completed on 2025-11-13 19:15:02
+INSERT INTO ItensPedido (pedido_id, livro_id, quantidade, preco) VALUES 
+(1, 1, 1, 35.90),
+(1, 3, 1, 49.90),
+(2, 2, 1, 42.50),
+(3, 5, 3, 29.90);
